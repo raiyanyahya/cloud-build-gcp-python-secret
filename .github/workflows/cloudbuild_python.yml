@@ -1,0 +1,21 @@
+name: Submit a python job to cloud build
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  deploy:
+    name: Submit a python build to cloud build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v1
+
+      - name: Authenticate into Google Cloud Platform
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_email: ${{ secrets.GCLOUD_EMAIL }}
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+      - name: Submit job to gcp
+        run: gcloud builds submit --no-source --config cloudbuild.yml --project buildpipe-test --timeout 10s
